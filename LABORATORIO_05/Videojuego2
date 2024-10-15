@@ -1,0 +1,93 @@
+package Lab5;
+import java.util.*;
+public class Videojuego2 {
+	 public static void main(String[] args) {
+		 Random rand=new Random();
+		 int NumSold=rand.nextInt(10)+1;
+		 Soldado [][] ejercito=inicializar(NumSold);
+		 String nombre=soldadoMayorVida(ejercito);
+		 System.out.println("El soldado con mayor vida es: "+nombre);
+		 Double vida=promedioNivelVida(ejercito, NumSold);
+		 System.out.println("El promedio del nivel de vida es: "+vida); 
+		 imprimirVida(ejercito);
+	 }
+	 
+	 public static void imprimir(Soldado [][]arreglo) {
+	        for (int k=0;k<arreglo.length;k++) {
+	        	System.out.println();
+	        	for (int j=0;j<arreglo[k].length;j++) {
+	        		System.out.println(arreglo[j]);
+	        	}
+	        }
+	 }
+	 
+	 public static Soldado[][] inicializar(int x) {
+		 Random rand=new Random();
+		 Soldado ejercito[][]=new Soldado[10][10];
+		 for (int i=0;i<ejercito.length;i++) {
+			 for (int j=0;j<ejercito[i].length;j++) {
+				 ejercito[i][j]=new Soldado();
+				 ejercito[i][j].setOcupado(false);
+			 }
+		 }
+		 for (int k=0;k<x;k++) {
+			 int fila=rand.nextInt(10);
+			 int columna=rand.nextInt(10);
+			 boolean ocupado=ejercito[fila][columna].getOcupado();
+			 while (ocupado=true) {
+				 fila=rand.nextInt(10);
+				 columna=rand.nextInt(10);
+				 ocupado=ejercito[fila][columna].getOcupado();
+			 }
+			 ejercito[fila][columna].setFila(fila+1);
+			 ejercito[fila][columna].setColumna(columna+1);
+			 ejercito[fila][columna].setNivelVida(rand.nextInt(5)+1);
+			 ejercito[fila][columna].setOcupado(true);
+		}
+		 return ejercito;	 
+	 }
+	 
+	 public static String soldadoMayorVida (Soldado [][] arreglo) {
+		 int mayor=0;
+		 String soldadoMayor="";
+		  	for (int i=0;i<arreglo.length;i++) {
+		  		for (int j=0;j<arreglo[i].length;j++) {
+		  			boolean ocupado=arreglo[i][j].getOcupado();
+		  			if (ocupado=true) {
+		  				int vida=arreglo[i][j].getNivelVida();
+		  				if (vida>mayor) {
+		  					mayor=vida;
+		  					soldadoMayor=arreglo[i][j].getNombre();
+		  				}
+		  			}	
+		   		}
+		   	}
+		   	return soldadoMayor; 
+	 }
+	 
+	 public static double promedioNivelVida (Soldado [][] arreglo, int x) {
+		 int acumulado=0;
+		 for (int i=0;i<arreglo.length;i++) {
+		  		for (int j=0;j<arreglo[i].length;j++) {
+		  			boolean ocupado=arreglo[i][j].getOcupado();
+		  			if (ocupado=true) {
+		  				int vida=arreglo[i][j].getNivelVida();
+		  				acumulado+=vida; 
+		  			}
+		  		}
+		 }
+		 double promedio=acumulado/x;
+		 return promedio;
+	 }
+	 
+	 public static void imprimirVida(Soldado[][] arreglo) {
+		 for (int i=0;i<arreglo.length;i++) {
+		  		for (int j=0;j<arreglo[i].length;j++) {
+		  			boolean ocupado=arreglo[i][j].getOcupado();
+		  			if (ocupado=true) {
+		  				System.out.println("-Soldado "+arreglo[i][j].getNombre()+"\tVida: "+arreglo[i][j].getNivelVida());
+		  			}
+		  		}
+		 }
+	 }
+}

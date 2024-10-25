@@ -2,24 +2,25 @@ public class Soldado {
     private String nombre;
     private int nivelVida;
     private int fila;
-    private int columna; 
+    private int columna;
     private boolean ocupado;
     private int numEjer;
-
+    public Soldado(){
+    }
     public void setNombre(String n){
         nombre=n;
     }
     public void setNivelVida(int v) {
-    	nivelVida=v;
+        nivelVida=v;
     }
     public void setFila(int f) {
-    	fila=f;
+        fila=f;
     }
     public void setColumna (int c) {
-    	columna=c;
+        columna=c;
     }
     public void setOcupado (boolean o) {
-    	ocupado=o;
+        ocupado=o;
     }
     public void setNumEjercito (int e){
         numEjer=e;
@@ -28,21 +29,21 @@ public class Soldado {
         return nombre;
     }
     public int getNivelVida() {
-    	return nivelVida;
+        return nivelVida;
     }
     public int getFila() {
-    	return fila;
+        return fila;
     }
     public int getColumna() {
-    	return columna; 
+        return columna;
     }
     public boolean getOcupado() {
-    	return ocupado;
+        return ocupado;
     }
     public int getNumEjercito(){
         return numEjer;
     }
     public String toString() {
-    	return "-Nombre: "+nombre+"\t-Posición: ("+fila+","+columna+")\t-Nivel de Vida: "+nivelVida;
+        return "-Nombre: "+nombre+"\t-Posición: ("+fila+","+columna+")\t-Nivel de Vida: "+nivelVida;
     }
 }

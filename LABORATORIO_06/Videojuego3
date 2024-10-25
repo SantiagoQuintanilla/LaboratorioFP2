@@ -1,96 +1,208 @@
 import java.util.*;
 public class Videojuego3 {
-	public static void main(String[] args) {
-		Random rand=new Random();
-		int NumSoldx1=rand.nextInt(10)+1;
-        int NumSoldx2=rand.nextInt(10)+1;
-		ArrayList<ArrayList<Soldado>> tablero=inicializarTablero();
-		imprimirTablero(tablero);
-		inicializarEjercito(tablero, 1);
-        inicializarEjercito(tablero, 2);
-        ArrayList<Soldado> ejercito1=;
-        ArrayList<Soldado> ejercito2=;
+    public static void main(String[] args) {
+        ArrayList<ArrayList<Soldado>> tablero=inicializarTablero();
+        ArrayList<Soldado> ejercito1=new ArrayList<Soldado>();
+        ArrayList<Soldado> ejercito2=new ArrayList<Soldado>();
 
-		Soldado soldMayor=soldadoMayorVida(ejercito1);
-		System.out.println("El soldado con mayor vida es: \n"+soldMayor);
-		Double vida=promedioNivelVida(ejercito);
-		System.out.println("El promedio del nivel de vida es: "+vida); 
-		imprimirVida(ejercito);
-		imprimirOrdenCreacion(ejercito);
-		imprimirRankingVida(ejercito);
-	}
-	public static void imprimirTablero(ArrayList<ArrayList<Soldado>> arreglo) {
-		System.out.println("\n_____________________________________________________");
-		System.out.println("Tablero de posiciones: ");
-	    for (int k=0;k<arreglo.size();k++) {
-	        System.out.println("");
-	        for (int j=0;j<(arreglo.get(k)).size();j++) {
-	        	boolean ocupado=(arreglo.get(k).get(j).getOcupado();
-	        	if (ocupado) {
-	        		System.out.print("|_X_|");
-	        	} else {
-	        		System.out.print("|___|");
-	        	}
-	    	}
-	    }
-	}
-	public static ArrayList<ArrayList<Soldado>> inicializarTablero() {
-		ArrayList<ArrayList<Soldado>> tablero=new ArrayList<ArrayList<Soldado>>();
-		for (int i=0;i<10;i++) {
-			for (int j=0;j<10;j++) {
+        inicializarEjercito(tablero, 1, ejercito1);
+        inicializarEjercito(tablero, 2, ejercito2);
+        imprimirTablero(tablero);
+
+        Soldado soldMayor1=soldadoMayorVida(ejercito1);
+        Soldado soldMayor2=soldadoMayorVida(ejercito2);
+        System.out.println("Los soldados con mayor vida son:");
+        System.out.println("\n-Ejercito 1: "+soldMayor1+"\n-Ejercito 2: "+soldMayor2);
+        System.out.println("\n_____________________________________________________");
+        Double vida1=promedioNivelVida(ejercito1);
+        Double vida2=promedioNivelVida(ejercito2);
+        System.out.println("El promedio del nivel de vida del ejercito 1 es: "+vida1);
+        System.out.println("El promedio del nivel de vida del ejercito 2 es: "+vida2);
+        imprimirOrdenCreacion(ejercito1);
+        imprimirOrdenCreacion(ejercito2);
+        imprimirRankingVida(ejercito1);
+        imprimirRankingVida(ejercito2);
+        decidirEjercitoGanador(ejercito1, ejercito2);
+    }
+    //Metodo que imprime el tablero creado, según el formato indicado
+    public static void imprimirTablero(ArrayList<ArrayList<Soldado>> arreglo) {
+        System.out.println("\n_____________________________________________________");
+        System.out.println("Tablero de posiciones: ");
+        for (int k=0;k<arreglo.size();k++) {
+            System.out.println("");
+            for (int j=0;j<arreglo.get(k).size();j++) {
+                boolean ocupado=arreglo.get(k).get(j).getOcupado();
+                if (ocupado) {
+                    int num=arreglo.get(k).get(j).getNumEjercito();
+                    System.out.print("|_"+num+"_|");
+                } else {
+                    System.out.print("|___|");
+                }
+            }
+        }
+    }
+    //Metodo que crea un tablero vacio bidimensional de 10x10
+    public static ArrayList<ArrayList<Soldado>> inicializarTablero() {
+        ArrayList<ArrayList<Soldado>> tablero=new ArrayList<ArrayList<Soldado>>();
+        for (int i=0;i<10;i++) {
+            ArrayList<Soldado> fila=new ArrayList<Soldado>();
+            for (int j=0;j<10;j++) {
                 Soldado s=new Soldado();
                 s.setOcupado(false);
-				tablero.get(i).add(s);
-			}
-		}
-		return tablero;	 
-	}
-    public static void inicializarEjercito(ArrayList<ArrayList<Soldado>> array, int x){
+                fila.add(s);
+            }
+            tablero.add(fila);
+        }
+        return tablero;  
+    }
+    //Metodo que crea un ejercito, lo ubica en el mapa (verificando que no se repitan dos soldados en un
+    //mismo lugar), y agragandolos a un ArrayList "ejercito"
+    public static void inicializarEjercito(ArrayList<ArrayList<Soldado>> array, int x, ArrayList<Soldado> ejer){
         Random rand=new Random();
-        ArrayList<Soldado> ejercito=new ArrayList<Soldado>();
         int NumSold=rand.nextInt(10)+1;
-        for (int k=0;k<x;k++) {
-			int fila=rand.nextInt(10);
-			int columna=rand.nextInt(10);
-			boolean ocupado=(array.get(fila).get(columna).getOcupado();
-			while (ocupado) {
-				fila=rand.nextInt(10);
-				columna=rand.nextInt(10);
-				ocupado=array.get(fila).get(columna).getOcupado();
-			}
-			String nombre="Soldado"+(k)+"x"+(x);
+        for (int k=0;k<NumSold;k++) {
+            int fila=rand.nextInt(10);
+            int columna=rand.nextInt(10);
+            boolean ocupado=array.get(fila).get(columna).getOcupado();
+            while (ocupado) {
+                fila=rand.nextInt(10);
+                columna=rand.nextInt(10);
+                ocupado=array.get(fila).get(columna).getOcupado();
+            }
+            String nombre="Soldado"+(k)+"x"+(x);
             array.get(fila).get(columna).setNombre(nombre);
             array.get(fila).get(columna).setFila(fila+1);
             array.get(fila).get(columna).setColumna(columna+1);
-            array.get(fila).get(columna).setNivelVida(rand.nextInt(5)+1)
+            array.get(fila).get(columna).setNivelVida(rand.nextInt(5)+1);
             array.get(fila).get(columna).setOcupado(true);
-		}
+            array.get(fila).get(columna).setNumEjercito(x);
+            ejer.add(array.get(fila).get(columna));
+        }
     }
-	public static Soldado soldadoMayorVida (ArrayList<Soldado> arreglo) {
-		int mayor=0;
-		Soldado soldadoMayor=null;
-		System.out.println("\n_____________________________________________________");
-		for (int i=0;i<arreglo.size();i++) {
-		  		int vida=arreglo.get(i).getNivelVida();
-		  		if (vida>mayor) {
-		  			mayor=vida;
-		  			soldadoMayor=arreglo.get(i);
-		  	    }
-		}	
-		return soldadoMayor; 
-	}
-	public ArrayList<Soldado> arrayListEjercito (ArrayList<ArrayList<Soldado>> arreglo, int x) {
-		Soldado ejercito[]=new Soldado[x];
-		int contador=0;
-		for (int i=0;i<arreglo.length;i++) {
-		  	    for (int j=0;j<arreglo[i].length;j++) {
-		  			boolean ocupado=arreglo[i][j].getOcupado();
-		  			if (ocupado) {
-		  				ejercito[contador]=arreglo[i][j];
-		  			    contador++;
-		  			}
-		  		}
-		}
-		return ejercito;
-	}
+    //Metodo que compara los soldados en un ArrayList "Ejercito" y devuelve el soldado con
+    //mayor vida en el ArrayList
+    public static Soldado soldadoMayorVida (ArrayList<Soldado> array) {
+        int mayor=0;
+        Soldado soldadoMayor=null;
+        System.out.println("\n_____________________________________________________");
+        for (int i=0;i<array.size();i++) {
+                int vida=array.get(i).getNivelVida();
+                if (vida>mayor) {
+                    mayor=vida;
+                    soldadoMayor=array.get(i);
+                }
+        }  
+        return soldadoMayor;
+    }
+    //Metodo que retorna el promedio del nivel de vida de todos los soldados creados de 
+    //un ejercito
+    public static double promedioNivelVida (ArrayList<Soldado> ejer){
+        double acumulado=0; 
+        for (int i=0;i<ejer.size();i++){
+            double vida=ejer.get(i).getNivelVida();
+            acumulado+=vida; 
+        }
+        double promedio=Math.round(acumulado/(ejer.size()));
+        return promedio;
+    }
+    //Metodo que ordena a los soldados en el orden que fueron creados
+    //y los imprime en tal orden
+    //--->Se emplea el algoritmo de Ordenamiento Burbuja
+    public static void imprimirOrdenCreacion(ArrayList<Soldado> ejer){
+        System.out.println("\n_____________________________________________________");
+        System.out.println("Orden segun su creacion: "); 
+        for (int i=1;i<ejer.size();i++){
+            for (int j=0;j<ejer.size()-1;j++){
+                String ejer_1=ejer.get(j).getNombre();
+                String ejer_2=ejer.get(j+1).getNombre();
+                if ((ejer_1).compareTo(ejer_2)>0){
+                    Soldado temp=ejer.get(j);
+                    ejer.set(j, ejer.get(j+1));
+                    ejer.set(j+1, temp);
+                }
+            }
+        }
+        for (int k=0;k<ejer.size();k++){
+            System.out.println(ejer.get(k));
+        }
+    }
+    //Metodo que rankea a los soldados decrecientenmente segun su nivel de vida
+    //y los imprime en tal orden
+    //--->Se emplea el algoritmo de Ordenamiento por Seleccion
+    public static void imprimirRankingVida(ArrayList<Soldado> ejer){
+        System.out.println("\n_____________________________________________________");
+        System.out.println("Ranking del nivel de vida:");
+        int n=0;
+        for (int i=0;i<ejer.size()-1;i++){
+            int mayor=i;
+            n++;
+            for (int j=n;j<ejer.size();j++){
+                if (ejer.get(j).getNivelVida()>ejer.get(mayor).getNivelVida()){
+                    mayor=j;
+                }
+            }
+            Soldado temp=ejer.get(mayor);
+            ejer.set(mayor, ejer.get(i));
+            ejer.set(i, temp);
+        }
+        for (int k=0;k<ejer.size();k++){
+            System.out.println(ejer.get(k));
+        }
+    }
+
+    //Metodo que compara, primero la vida total del ejercito, luego el promedio de vida de cada ejercito.
+    //Si en estos dos criterios ocurriese un empate, se compara la cantidad de soldados con vida maxima (5) y
+    //se decide el ganador
+    public static void decidirEjercitoGanador(ArrayList<Soldado> ejer1, ArrayList<Soldado> ejer2){
+        System.out.println("\n_____________________________________________________");
+        int contador_ejer1=0;
+        int contador_ejer2=0;
+        int acumulado1=0;
+        int acumulado2=0;
+        for (int i=0;i<ejer1.size();i++){
+            acumulado1+=ejer1.get(i).getNivelVida();
+        }
+        for (int j=0;j<ejer2.size();j++){
+            acumulado2+=ejer2.get(j).getNivelVida();
+        }
+        if (acumulado1>acumulado2){
+            contador_ejer1++;
+        } if (acumulado2>acumulado1){
+            contador_ejer2++;
+        }
+
+        if (promedioNivelVida(ejer1)>promedioNivelVida(ejer2)){
+            contador_ejer1++;
+        } if (promedioNivelVida(ejer2)>promedioNivelVida(ejer1)){
+            contador_ejer2++;
+        }
+
+        if (contador_ejer1==contador_ejer2){
+            int contador1=0;
+            int contador2=0;
+            for (int s=0;s<ejer1.size();s++){
+                if (ejer1.get(s).getNivelVida()==5){
+                    contador1++;
+                } 
+            }
+            for (int r=0;r<ejer2.size();r++){
+                if (ejer2.get(r).getNivelVida()==5){
+                    contador2++;
+                }
+            }
+            if (contador1>contador2){
+                contador_ejer1++;
+            }
+            if (contador2>contador1){
+                contador_ejer2++;
+            }
+        }
+        if (contador_ejer1>contador_ejer2){
+            System.out.println("El ejercito ganador fue el Ejercito 1!!!"); 
+        } if (contador_ejer2>contador_ejer1) {
+            System.out.println("El ejercito ganador fue el Ejercito 2!!!");
+        } if (contador_ejer1==contador_ejer2){
+            System.out.println("Hubo un empate");
+        }
+    }
 }

@@ -1,0 +1,128 @@
+package Lab8;
+import java.util.*;
+public class Videojuego5 {
+    public static void main(String[] args) {
+        HashMap<Integer, HashMap<Integer, Soldado>> tablero=inicializarTablero();
+        HashMap<Integer, Soldado> ejercito1=new HashMap<Integer, Soldado>();
+        HashMap<Integer, Soldado> ejercito2=new HashMap<Integer, Soldado>();
+
+        inicializarEjercito(tablero, 1, ejercito1);
+        inicializarEjercito(tablero, 2, ejercito2);
+        imprimirTablero(tablero);
+        
+        Soldado soldMayor1=soldadoMayorVida(ejercito1);
+        Soldado soldMayor2=soldadoMayorVida(ejercito2);
+        System.out.println("Los soldados con mayor vida son:");
+        System.out.println("\n-Ejercito 1: "+soldMayor1+"\n-Ejercito 2: "+soldMayor2);
+        System.out.println("\n_____________________________________________________");
+        double vida1=promedioNivelVida(ejercito1);
+        double vida2=promedioNivelVida(ejercito2);
+        System.out.println("El promedio del nivel de vida del ejercito 1 es: "+vida1);
+        System.out.println("El promedio del nivel de vida del ejercito 2 es: "+vida2);
+        imprimirOrdenCreacion(ejercito1);
+        imprimirOrdenCreacion(ejercito2);
+    }
+    //Metodo que imprime el tablero creado, según el formato indicado
+    public static void imprimirTablero(HashMap<Integer, HashMap<Integer, Soldado>> arreglo) {
+        System.out.println("\n_____________________________________________________");
+        System.out.println("Tablero de posiciones: ");
+        for (int k=0;k<arreglo.size();k++) {
+            System.out.println("");
+            for (int j=0;j<arreglo.get(k).size();j++) {
+                boolean ocupado=arreglo.get(k).get(j).getOcupado();
+                if (ocupado) {
+                    int num=arreglo.get(k).get(j).getNumEjercito();
+                    System.out.print("|_"+num+"_|");
+                } else {
+                    System.out.print("|___|");
+                }
+            }
+        }
+    }
+     //Metodo que crea un tablero vacio bidimensional de 10x10, utilizando un HashMap con claves de tipo Integer y valores de tipo
+    //HashMap, que contienen claves de tipo Integer y objetos de tipo Soldado
+     public static HashMap<Integer, HashMap<Integer, Soldado>>inicializarTablero() {
+        HashMap<Integer, HashMap<Integer, Soldado>> tablero=new HashMap<Integer, HashMap<Integer, Soldado>>();
+        for (int i=0;i<10;i++) {
+            HashMap<Integer, Soldado> fila=new HashMap<Integer, Soldado>();
+            for (int j=0;j<10;j++) {
+                Soldado s=new Soldado();
+                s.setOcupado(false);
+                fila.put(j,s);
+            }
+            tablero.put(i,fila);
+        }
+        return tablero;  
+    }
+     //Metodo que crea un ejercito, lo ubica en el mapa (verificando que no se repitan dos soldados en un
+     //mismo lugar), y agragandolos a un HashMap "ejercito"
+     public static void inicializarEjercito(HashMap<Integer, HashMap<Integer, Soldado>> array, int x, HashMap<Integer, Soldado> ejer){
+         Random rand=new Random();
+         int NumSold=rand.nextInt(10)+1;
+         for (int k=0;k<NumSold;k++) {
+             int fila=rand.nextInt(10);
+             int columna=rand.nextInt(10);
+             boolean ocupado=array.get(fila).get(columna).getOcupado();
+             while (ocupado) {
+                 fila=rand.nextInt(10);
+                 columna=rand.nextInt(10);
+                 ocupado=array.get(fila).get(columna).getOcupado();
+             }
+             String nombre="Soldado"+(k)+"x"+(x);
+             array.get(fila).get(columna).setNombre(nombre);
+             array.get(fila).get(columna).setFila(fila+1);
+             array.get(fila).get(columna).setColumna(columna+1);
+             array.get(fila).get(columna).setNivelVida(rand.nextInt(5)+1);
+             array.get(fila).get(columna).setOcupado(true);
+             array.get(fila).get(columna).setNumEjercito(x);
+             ejer.put(k, array.get(fila).get(columna));
+         }
+     }
+     //Metodo que compara los soldados en un HashMap "Ejercito" y devuelve el soldado con
+     //mayor vida en el HashMap
+     public static Soldado soldadoMayorVida (HashMap<Integer, Soldado> array) {
+         int mayor=0;
+         Soldado soldadoMayor=null;
+         System.out.println("\n_____________________________________________________");
+         for (int i=0;i<array.size();i++) {
+                 int vida=array.get(i).getNivelVida();
+                 if (vida>mayor) {
+                     mayor=vida;
+                     soldadoMayor=array.get(i);
+                 }
+         }  
+         return soldadoMayor;
+     }
+     //Metodo que retorna el promedio del nivel de vida de todos los soldados creados de 
+     //un ejercito
+     public static double promedioNivelVida (HashMap<Integer, Soldado> ejer){
+         double acumulado=0.0; 
+         for (int i=0;i<ejer.size();i++){
+             double vida=ejer.get(i).getNivelVida();
+             acumulado+=vida; 
+         }
+         double promedio=acumulado/(ejer.size());
+         return promedio;
+     }
+     //Metodo que ordena a los soldados en el orden que fueron creados
+     //y los imprime en tal orden
+     //--->Se emplea el algoritmo de Ordenamiento Burbuja
+     public static void imprimirOrdenCreacion(HashMap<Integer, Soldado> ejer){
+         System.out.println("\n_____________________________________________________");
+         System.out.println("Orden segun su creacion: "); 
+         for (int i=1;i<ejer.size();i++){
+             for (int j=0;j<ejer.size()-1;j++){
+                 String ejer_1=ejer.get(j).getNombre();
+                 String ejer_2=ejer.get(j+1).getNombre();
+                 if ((ejer_1).compareTo(ejer_2)>0){
+                     Soldado temp=ejer.get(j);
+                     ejer.put(j, ejer.get(j+1));
+                     ejer.put(j+1, temp);
+                 }
+             }
+         }
+         for (int k=0;k<ejer.size();k++){
+             System.out.println(ejer.get(k));
+         }
+     }
+}

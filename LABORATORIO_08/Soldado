@@ -1,4 +1,3 @@
-package Lab8;
 public class Soldado {
     private String nombre;
     private int puntosVida;
